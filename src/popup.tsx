@@ -45,7 +45,7 @@ const Popup = () => {
    * タイマーハンドル
    */
   const handleStartTimer = () => {
-    if(!totalMinutes && totalMinutes > 1) {
+    if(!totalMinutes || totalMinutes < 0) {
       alert("please set the correct value");
       return;
     }
