@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import "./main.css";
 
 const Popup = () => {
   const [totalMinutes, setTotalMinutes] = useState(0);
@@ -45,7 +46,7 @@ const Popup = () => {
    * タイマーハンドル
    */
   const handleStartTimer = () => {
-    if(!totalMinutes && totalMinutes > 1) {
+    if(!totalMinutes || totalMinutes < 0) {
       alert("please set the correct value");
       return;
     }
@@ -61,7 +62,7 @@ const Popup = () => {
   }
   return (
     <>
-    <h1>google meet用タイマー設定</h1>
+    <h2 className="text-red-500">google meet用タイマー設定</h2>
       <div>
         <label>set Minutes:
           <input type="number" onChange={handleTotalMinutesInput} />

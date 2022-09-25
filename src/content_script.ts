@@ -14,14 +14,6 @@ let intervalId: number,
     elapsedSec = 0;
 
 /**
- * タイマーをクリアする
- */
-const clearTimer = () => {
-  elapsedSec = 0;
-  window.clearInterval(intervalId);
-}
-
-/**
  * タイマーを実行
  * @param totalMinutes 入力された時間（分単位）
  */
@@ -33,28 +25,20 @@ const startInterval = (totalMinutes: number) => {
 }
 
 /**
- * meetのコメント欄を開く
- */
-const openChat = () => {
-  const googleMaterialIcon = document.getElementsByClassName("google-material-icons") as HTMLCollectionOf<HTMLElement>;
-  let chatIconElement!: HTMLElement;
-  for (let i = 0; i < googleMaterialIcon.length; i++) {
-    if (googleMaterialIcon[i].textContent === "chat") {
-      chatIconElement = googleMaterialIcon[i];
-      break;
-    }
-  }
-  if (chatIconElement !== undefined) {
-    chatIconElement.click();
-  }
-}
-
-/**
  * 定期実行される関数
  * @param totalSec 入力された時間(秒単位)
  * @returns 
  */
 const IntervalFunc = (totalSec: number) => {
+    //startしてから何秒経ったかをカウントする
+    elapsedSec+=1;
+    let postMessage = chatMessage(totalSec, elapsedSec);
+    console.log(elapsedSec);
+    console.log(totalSec);
+
+    // 特定の秒数が経過していないときはreturnする
+    if (!postMessage) return;
+    
     openChat();
     const meetTextarea = document.getElementsByTagName("textarea"),
           allButtonElement = document.getElementsByTagName("button");
@@ -68,30 +52,18 @@ const IntervalFunc = (totalSec: number) => {
       return;
     }
 
-    //startしてから何秒経ったかをカウントする
-    elapsedSec+=1;
-    let postMessage = chatMessage(totalSec, elapsedSec);
-    console.log(elapsedSec);
-    console.log(totalSec);
-    console.log(postMessage);
-
     for (let i = 0; i < allButtonElement.length; i++) {
       if (allButtonElement[i].getAttribute("aria-label") === '参加者全員にメッセージを送信') {
         sendButtonElement = allButtonElement[i];
 
-        // ここら辺を綺麗にしたい
         if (postMessage) {
-          console.log(postMessage);
           meetTextarea[0].value = postMessage;
           sendButtonElement.disabled = false;
           sendButtonElement.click();
-        }
-        if (totalSec === elapsedSec) {
-          meetTextarea[0].value = "終了";
-          sendButtonElement.disabled = false;
-          sendButtonElement.click();
-          window.clearInterval(intervalId);
-          elapsedSec = 0;
+          if (totalSec === elapsedSec) {
+            window.clearInterval(intervalId);
+            elapsedSec = 0;
+          }
         }
       }
     }
@@ -124,6 +96,34 @@ const chatMessage = (totalSec: number, elapsedSec: number):string | null=> {
   if (elapsedSec === oneMinuteAgo) {
     return "残り１分"
   }
+  if (totalSec === elapsedSec) {
+    return "終了"
+  }
 
   return null
+}
+
+/**
+ * タイマーをクリアする
+ */
+ const clearTimer = () => {
+  elapsedSec = 0;
+  window.clearInterval(intervalId);
+}
+
+/**
+ * meetのコメント欄を開く
+ */
+ const openChat = () => {
+  const googleMaterialIcon = document.getElementsByClassName("google-material-icons") as HTMLCollectionOf<HTMLElement>;
+  let chatIconElement!: HTMLElement;
+  for (let i = 0; i < googleMaterialIcon.length; i++) {
+    if (googleMaterialIcon[i].textContent === "chat") {
+      chatIconElement = googleMaterialIcon[i];
+      break;
+    }
+  }
+  if (chatIconElement !== undefined) {
+    chatIconElement.click();
+  }
 }
