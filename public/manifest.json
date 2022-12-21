@@ -8,8 +8,8 @@
   "action": {
     "default_icon": {
       "16": "timerIcon16.png",
-      "24": "timerIcon24.png",
-      "32": "timerIcon32.png"
+      "24": "timerIcon48.png",
+      "32": "timerIcon128.png"
     },
     "default_popup": "popup.html"
   },
@@ -27,5 +27,6 @@
 
   "host_permissions": [
     "<all_urls>"
-  ]
+  ],
+  "permissions": ["tabs", "scripting"]
 }

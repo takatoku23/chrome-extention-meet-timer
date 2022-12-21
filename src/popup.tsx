@@ -46,8 +46,8 @@ const Popup = () => {
    * タイマーハンドル
    */
   const handleStartTimer = () => {
-    if(!totalMinutes || totalMinutes < 0) {
-      alert("please set the correct value");
+    if(!totalMinutes || totalMinutes < 0 || !Number.isInteger(totalMinutes)) {
+      alert("正しい値を入力してください");
       return;
     }
     setStartedTimer(true);
@@ -68,6 +68,8 @@ const Popup = () => {
             <input
               type="number"
               id="minutes"
+              max={60}
+              min={1}
               onChange={handleTotalMinutesInput} 
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1"
               placeholder=""
