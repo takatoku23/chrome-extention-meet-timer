@@ -1,6 +1,4 @@
-# Chrome Extension Sample
-
-Chrome Extension Sample
+# Meet Timer
 
 ## Prerequisites
 
