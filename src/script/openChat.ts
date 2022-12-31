@@ -1,5 +1,7 @@
+/**
+ * chatを開く
+ */
 export function openChat() {
-  // chatを開く
   const googleMaterialIcon = document.getElementsByClassName("google-material-icons") as HTMLCollectionOf<HTMLElement>;
   let chatIconElement!: HTMLElement;
   for (let i = 0; i < googleMaterialIcon.length; i++) {
