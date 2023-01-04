@@ -1,41 +1,54 @@
+import { MeetController } from "./meetController";
+
+// meetのdom操作する系class→timerのような依存関係にしたい
 export class Timer {
   /**
    * インターバルID
    */
-  intervalId: number;
+  private intervalId: number;
 
   /**
    * 経過時間
    */
-  elapsedSec: number;
+  private elapsedSec: number;
 
-  // /**
-  //  * 入力された時間
-  //  */
-  // total: number;
+  /**
+   * 経過時間
+   */
+  private totalSec: number;
 
-  constructor() {
+  /**
+   * meet画面の操作をするためのクラス
+   */
+  private readonly meetController: MeetController;
+
+  /**
+   * 遅延時間(1秒)
+   */
+  static readonly DELAY_MILSEC = 1000;
+
+  constructor(public totalMinutes: number) {
     this.intervalId = 0;
     this.elapsedSec = 0;
+    this.totalSec = this.totalMinutes * 60;
+    this.meetController = new MeetController();
   }
 
   /**
    * タイマーを実行
    * @param totalMinutes 入力された時間（分単位）
    */
-  public startInterval = (totalMinutes: number) => {
-    let totalSec = totalMinutes * 60,
-      delayMilSec = 1000;
-    this.openChat();
-    console.log(this.intervalId);
+  public startTimer = () => {
+    // 先にチャット欄を開いていないとメッセージをtextareにセットできないためタイマーセット時にチャット欄をopenしておく
+    this.meetController.openChat()
 
     // タイマー進行中にスタートボタンが押されたらリセットして再開する
     this.clearTimer();
 
     this.intervalId = window.setInterval(
       this.IntervalFunc,
-      delayMilSec,
-      totalSec
+      Timer.DELAY_MILSEC,
+      this.totalSec
     );
   };
 
@@ -63,32 +76,14 @@ export class Timer {
     if (!this.isPostMessage(totalSec, this.elapsedSec)) return;
     const postMessage = this.chatMessage(totalSec, this.elapsedSec);
 
-    this.openChat();
+    this.meetController.openChat();
 
-    this.sendMessage(totalSec, postMessage);
-  };
+    this.meetController.sendMessage(postMessage);
 
-  private sendMessage(totalSec: number, postMessage: string) {
-    const meetTextarea = document.getElementsByTagName("textarea"),
-      allButtonElement = document.getElementsByTagName("button");
-    let sendButtonElement: HTMLButtonElement,
-      spanParent = meetTextarea[0].previousElementSibling,
-      spanText = spanParent ? spanParent.lastElementChild : undefined;
-
-    for (let i = 0; i < allButtonElement.length; i++) {
-      if (
-        allButtonElement[i].getAttribute("aria-label") ===
-        "参加者全員にメッセージを送信"
-      ) {
-        meetTextarea[0].value = postMessage;
-        allButtonElement[i].disabled = false;
-        allButtonElement[i].click();
-        if (totalSec === this.elapsedSec) {
-          this.clearTimer()
-        }
-      }
+    if (totalSec === this.elapsedSec) {
+      this.clearTimer();
     }
-  }
+  };
 
   /**
    * 送信するメッセージを返す
@@ -143,24 +138,5 @@ export class Timer {
     }
 
     return false;
-  };
-
-  /**
-   * meetのコメント欄を開く
-   */
-  private openChat = () => {
-    const googleMaterialIcon = document.getElementsByClassName(
-      "google-material-icons"
-    ) as HTMLCollectionOf<HTMLElement>;
-    let chatIconElement!: HTMLElement;
-    for (let i = 0; i < googleMaterialIcon.length; i++) {
-      if (googleMaterialIcon[i].textContent === "chat") {
-        chatIconElement = googleMaterialIcon[i];
-        break;
-      }
-    }
-    if (chatIconElement !== undefined) {
-      chatIconElement.click();
-    }
   };
 }

@@ -5,16 +5,21 @@ interface request {
   value: number;
 }
 
-const timer = new Timer();
-// 途中でstartしたらバグるのでその対応をする
+let timer: Timer;
+
 /**
  * chrome apiからrequestを受け取る
-*/
+ */
 chrome.runtime.onMessage.addListener((request: request) => {
   if (request.message === "startTimer") {
-    timer.startInterval(request.value);
+    // すでにセットされているタイマーがあればクリアしてから再度インスタンス化してセットする
+    if (timer) {
+      timer.clearTimer();
+    }
+    timer = new Timer(request.value);
+    timer.startTimer();
   }
-  if (request.message === "clearTimer") {
-    timer.clearTimer();
+  if (request.message === "clearTimer" && timer) {
+      timer.clearTimer();
   }
-})
+});
