@@ -23,6 +23,5 @@
 
   "host_permissions": [
     "<all_urls>"
-  ],
-  "permissions": ["tabs", "scripting"]
+  ]
 }
