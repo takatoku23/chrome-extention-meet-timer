@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./main.css";
 
-export const Index = () => {
+export const Popup = () => {
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [startedTimer, setStartedTimer] = useState(false);
   const [clearTimer, setClearTimer] = useState(false);
